@@ -23,7 +23,7 @@ def main():
     # SKA Low's approx location
     loc = EarthLocation.of_site('MWA')
 
-    # Put one station at above location, and the other 100 m to the east
+    # Put one station at above location, and the other 3.5 km in some direction
     station1 = loc
 
     baseline_length = 3.5* u.km
@@ -67,9 +67,7 @@ def main():
 
         t_idx = np.where((t - t[0]).to('min') > stop_tracking_time)[0][0]
         pointing_at_stopping_time = station_beam_ecef[:,t_idx]
-        print(f'{pointing_at_stopping_time.shape = }')
-        print(f'{src_ecef[:,t_idx:].shape = }')
-        print(f'{separations[t_idx:].shape = }')
+
         separations[t_idx:] = np.arccos(np.dot(pointing_at_stopping_time, src_ecef[:,t_idx:]))
 
     # Choose a gaussian with FWHM = 3 degrees and apply the primary beam
@@ -80,7 +78,6 @@ def main():
     Vhat = pb_corr * V *  np.exp(2j*np.pi * np.dot(measured_baseline, pointing_ecef)[:,np.newaxis] / λ[np.newaxis,:])
 
     fig = plt.figure(figsize=(9,7))
-    #plt.pcolormesh(f.to('MHz').value, (t - t[0]).to('min').value, np.angle(V).value)
     plt.pcolormesh(f.to('MHz').value, (t - t[0]).to('min').value, np.imag(Vhat))
     cbar = plt.colorbar()
     cbar.set_label("Imag. part of vis")
