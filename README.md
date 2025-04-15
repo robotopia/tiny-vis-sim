@@ -1,5 +1,12 @@
 # Toy visibility simulation
 
+## Requirements
+
+- `numpy`
+- `astropy`
+- `matplotlib`
+- `argparse`
+
 ## Usage
 
 ```
